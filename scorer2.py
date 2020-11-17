@@ -4,7 +4,7 @@ import time, sys, os, platform, pickle
 c, r = 1, 0
 doSave = False
 filename: str
-calcbool = False
+is_calculated = False
 
 def clear():
     OS = platform.system()
@@ -113,14 +113,14 @@ def playerInput():
     clear()
 
 def calc():
-    global calcbool
-    if not calcbool:
+    global is_calculated
+    if not is_calculated:
         for p in Player.players:
             if p.stiche_a == p.stiche_m:
                 p.addP((p.stiche_m + 10))
             else:
                 p.addP(p.stiche_m)
-        calcbool = True
+        is_calculated = True
 
 
 
@@ -128,6 +128,7 @@ def printScore():
     clear()
     score = [p for p in Player.players]
     score.sort(key=lambda x: x.points, reverse = True)
+    #start = "{}".format("")
     print("\n########## SCORE (Round {}/{}) ##########\n".format(c,r))
     for s in score:
         print(s.name,f"({s.stiche_m}/{s.stiche_a})", ": ", s.points, end="\n")
@@ -148,6 +149,7 @@ def displayHelp():
     score   show the score
     setR    set number of rounds
     setC    set current round
+    calc    calculate
     exit    exit the game
     help    show this information\n"""
     print(msg)
@@ -236,9 +238,9 @@ def CLI():
             return CLI()
 
 def loop():
-    global c, r, calcbool
+    global c, r, is_calculated
     while c <= r:
-        calcbool = False
+        is_calculated = False
         clear()
         playerInput()
         CLI()
