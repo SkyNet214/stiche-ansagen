@@ -1,6 +1,7 @@
 input("[START]")
 import time, sys, os, platform, pickle
 
+testvar = "lie"
 c, r = 1, 0
 doSave = False
 filename: str
