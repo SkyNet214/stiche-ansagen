@@ -1,11 +1,11 @@
 input("[START]")
 import time, sys, os, platform, pickle
 
-c, r = 1, 0
-doSave = False
-filename: str
-is_calculated = False
+c, r = 1, 0 # c - current round; r - total amount of rounds
+doSave = False # if the skript should save every round
+is_calculated = False # if the scores where already calculated
 
+# a function to clear the shell
 def clear():
     OS = platform.system()
     if OS == 'Windows':
@@ -16,6 +16,7 @@ def clear():
         cc = ''
     os.system(cc)
 
+# a function for a binary answer input (yes or no)
 def binInput(msg):
     try:
         a = str(input(msg))
@@ -28,6 +29,7 @@ def binInput(msg):
         input("[ERROR] Answer must be 'y' or 'n'")
         return binInput(msg)
 
+# a function for integer input with exception handling
 def intInput(message):
     try:
       num = int(input(message))
@@ -36,6 +38,7 @@ def intInput(message):
       print("[ERROR] Please type in an integer.")      
       return intInput(message)
 
+# a function for string input with exception handling
 def strInput(message):
 	try:
 		string = str(input(message))
@@ -60,6 +63,7 @@ class Player:
     def setP(self, points):
         self.points = points
 
+    # a function to arrange the list of player objects
     @classmethod
     def arrangePlayersList(cls):
         clear()
@@ -75,6 +79,7 @@ class Player:
         cls.players = [cls.players[i] for i in order]
         clear()
 
+# a function to create the player objects
 def createPlayerObjects():
     clear()
     n = intInput("Number of players > ")
@@ -162,19 +167,21 @@ def setC():
     global c
     c = intInput("Current round > ")
 
+def setPoints():
+    pass
+
 def load(filename):
     global c, r
     with open(filename, 'rb') as f:
         Player.players, r, c = pickle.load(f)
         f.close()
 
-def save():
-    global filename
+def save(filename):
     if doSave:
         with open(filename, 'wb') as f:
             pickle.dump([Player.players, r, c], f, protocol=2)
 
-def loadStat():
+def loadSetup():
     a = binInput("Do you want to load a savefile? [y/n] ")
     if a:
         filename = strInput("Filename > ")
@@ -182,30 +189,30 @@ def loadStat():
         	load(filename)
         except:
             print("[ERROR] couldn't load file")
-            return loadStat()
+            return loadSetup()
     return a
 
-def saveStat():
-    global doSave, filename
+def saveSetup():
+    global doSave
     a = binInput("Do you want to save the game every round? [y/n] ")
     if a:
         filename = strInput("Savefile name > ")
         try:
-            save()
+            save(filename)
             doSave = True
         except:
             print("[ERROR] couldn't find or create savefile")
-            return saveStat()
+            return saveSetup()
     else: doSave = False
 
 def initiateGame():
     global r
     clear()
     intro()
-    if not loadStat():
+    if not loadSetup():
         r = intInput("Number of rounds > ")
         createPlayerObjects()
-    saveStat()
+    saveSetup()
     clear()
 
 def CLI():
@@ -213,7 +220,7 @@ def CLI():
     while True:
         dic = {
         "chOrd"     : Player.arrangePlayersList,
-        "setP"      : None, #setPoints,
+        "setP"      : setPoints,
         "setS1"     : None,
         "setS2"     : None,
         "score"     : printScore,
