@@ -10,7 +10,7 @@ def clear():
     OS = platform.system()
     if OS == 'Windows':
         cc = 'cls'
-    elif OS == 'Linux':
+    elif OS == 'Linux' or OS == 'MacOS':
         cc = 'clear'
     else:
         cc = ''
